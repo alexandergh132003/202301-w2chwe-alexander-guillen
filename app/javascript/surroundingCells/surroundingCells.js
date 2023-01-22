@@ -1,6 +1,6 @@
-const surroundingElements = (listOfValues, value) => {
+const surroundingCells = (listOfValues, value) => {
   const verticalAxis = listOfValues.indexOf(
-    listOfValues.find((list) => list.includes(value))
+    listOfValues.find((list) => [...list].includes(value))
   );
   const horizontalAxis = listOfValues[verticalAxis].indexOf(value);
 
@@ -25,4 +25,4 @@ const surroundingElements = (listOfValues, value) => {
   return surroundingElements.filter((element) => element !== value);
 };
 
-export default surroundingElements;
+export default surroundingCells;

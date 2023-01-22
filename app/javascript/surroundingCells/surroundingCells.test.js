@@ -1,4 +1,4 @@
-import surroundingElements from "./surroundingElements.js";
+import surroundingCells from "./surroundingCells.js";
 
 describe("Given the function surroundingElements", () => {
   describe("When it receives a list [[1, 2, 3], [4, 5, 6]] and value 5", () => {
@@ -10,7 +10,7 @@ describe("Given the function surroundingElements", () => {
       const value = 5;
       const expectedResult = [[1, 2, 3, 4, 6]];
 
-      const result = surroundingElements(listOfListOfNumbers, value);
+      const result = surroundingCells(listOfListOfNumbers, value);
 
       expect(result).toEqual(...expectedResult);
     });
