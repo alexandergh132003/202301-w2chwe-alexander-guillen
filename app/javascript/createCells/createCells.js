@@ -2,56 +2,43 @@ import surroundingCells from "../surroundingCells/surroundingCells.js";
 import splitCells from "./splitCells.js";
 
 const createCells = () => {
-  let board = [...document.getElementsByClassName("grid")];
-
-  board = board.map((cell) => {
+  const board = [...document.getElementsByClassName("grid")].map((cell) => {
     cell.style.backgroundColor = Math.random() > 0.5 ? "black" : "white";
     return cell;
   });
 
-  const bidimensionalCells = splitCells(board, 30);
+  const updateCells = (board) => {
+    const nextBoard = [...board];
 
-  const livingCells = board.filter(
-    (cell) => cell.style.backgroundColor === "black"
-  );
+    const bidimensionalBoard = splitCells(board, 30);
 
-  for (const cell of board) {
-    const cellOldStatus = cell.style.backgroundColor;
+    const surroundingLivingCells = board.map((currentCell) => {
+      const surroundingCell = surroundingCells(bidimensionalBoard, currentCell);
+      return surroundingCell.filter(
+        (cell) => cell.style.backgroundColor === "black"
+      );
+    });
 
-    const surroundingLivingCells = surroundingCells(
-      bidimensionalCells,
-      cell
-    ).filter((element) => livingCells.includes(element));
+    for (let i = 0; i < board.length; i++) {
+      const currentCell = board[i];
+      const aliveCount = surroundingLivingCells[i].length;
 
-    if (cellOldStatus === "black") {
-      const cellNewStatus =
-        surroundingLivingCells.length >= 2 && surroundingLivingCells.length <= 3
-          ? "black"
-          : "white";
-
-      if (cellOldStatus !== cellNewStatus) {
-        cell.style.backgroundColor = cellNewStatus;
-        livingCells.splice(livingCells.indexOf(cell), 1);
+      if (currentCell.style.backgroundColor === "black") {
+        if (aliveCount < 2 || aliveCount > 3) {
+          nextBoard[i].style.backgroundColor = "white";
+        }
+      } else if (currentCell.style.backgroundColor === "white") {
+        if (aliveCount === 3) {
+          nextBoard[i].style.backgroundColor = "black";
+        }
       }
     }
 
-    if (cellOldStatus === "white") {
-      const cellNewStatus =
-        surroundingLivingCells.length === 3 ? "black" : "white";
+    board = nextBoard;
+  };
 
-      if (cellOldStatus !== cellNewStatus) {
-        cell.style.backgroundColor = cellNewStatus;
-        livingCells.push(cell);
-      }
-    }
-  }
-
-  const intervalId = setInterval(() => {
-    createCells();
-
-    if (livingCells.length === 0) {
-      clearInterval(intervalId);
-    }
+  setInterval(() => {
+    updateCells(board);
   }, 1000);
 };
 
